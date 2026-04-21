@@ -1,11 +1,11 @@
 // Copyright 2022 UNN-IASR
 
 #include "Automata.h"
+
 #include <iostream>
 #include <sstream>
 
 Automata::Automata() : cash(0), state(STATES::OFF), selectedDrink(-1) {
-    // Инициализация меню и цен
     menu = {"Espresso", "Americano", "Cappuccino", "Latte"};
     prices = {50, 60, 80, 90};
 }
@@ -31,13 +31,11 @@ void Automata::coin(int money) {
         state = STATES::ACCEPT;
     } else if (state == STATES::ACCEPT) {
         cash += money;
-        // остаёмся в ACCEPT
     }
 }
 
 void Automata::cancel() {
     if (state == STATES::ACCEPT) {
-        // возврат денег (имитация)
         cash = 0;
         state = STATES::WAIT;
         selectedDrink = -1;
@@ -57,7 +55,8 @@ STATES Automata::getState() const {
 }
 
 void Automata::choice(int drinkIndex) {
-    if (state == STATES::ACCEPT && drinkIndex >= 0 && drinkIndex < static_cast<int>(menu.size())) {
+    if (state == STATES::ACCEPT && drinkIndex >= 0 &&
+        drinkIndex < static_cast<int>(menu.size())) {
         selectedDrink = drinkIndex;
         state = STATES::CHECK;
     }
@@ -69,7 +68,6 @@ bool Automata::check() {
         state = STATES::COOK;
         return true;
     } else {
-        // недостаточно денег – возврат в ACCEPT
         state = STATES::ACCEPT;
         return false;
     }
@@ -77,14 +75,12 @@ bool Automata::check() {
 
 void Automata::cook() {
     if (state == STATES::COOK) {
-        // имитация приготовления
         std::cout << "Приготовление " << menu[selectedDrink] << "...\n";
     }
 }
 
 void Automata::finish() {
     if (state == STATES::COOK) {
-        // выдача напитка и сдачи
         cash -= prices[selectedDrink];
         std::cout << "Заберите ваш " << menu[selectedDrink] << "!\n";
         if (cash > 0) {
