@@ -1,9 +1,9 @@
 // Copyright 2022 UNN-IASR
-
 #include "Automata.h"
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
 Automata::Automata() : cash(0), state(STATES::OFF), selectedDrink(-1) {
     menu = {"Espresso", "Americano", "Cappuccino", "Latte"};
@@ -35,7 +35,7 @@ void Automata::coin(int money) {
 }
 
 void Automata::cancel() {
-    if (state == STATES::ACCEPT) {
+    if (state == STATES::ACCEPT || state == STATES::CHECK) {
         cash = 0;
         state = STATES::WAIT;
         selectedDrink = -1;

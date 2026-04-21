@@ -14,14 +14,14 @@ enum class STATES {
 };
 
 class Automata {
-private:
+private:  // было без отступа
     int cash;
     std::vector<std::string> menu;
     std::vector<int> prices;
     STATES state;
-    int selectedDrink;  // индекс выбранного напитка
+    int selectedDrink;
 
-public:
+public:   // тоже нужен отступ
     Automata();
     void on();
     void off();

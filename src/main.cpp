@@ -6,17 +6,20 @@ int main() {
     Automata machine;
     std::cout << "Автомат выключен. Включаем...\n";
     machine.on();
-    std::cout << "Состояние: " << static_cast<int>(machine.getState()) << " (WAIT=1)\n";
+    std::cout << "Состояние: " << static_cast<int>(machine.getState())
+              << " (WAIT=1)\n";
 
     std::cout << "\nМеню:\n" << machine.getMenu();
 
     std::cout << "\nВносим 70 рублей...\n";
     machine.coin(70);
-    std::cout << "Состояние: " << static_cast<int>(machine.getState()) << " (ACCEPT=2)\n";
+    std::cout << "Состояние: " << static_cast<int>(machine.getState())
+              << " (ACCEPT=2)\n";
 
     std::cout << "\nВыбираем напиток №2 (Americano, цена 60 руб)\n";
     machine.choice(1);  // индекс 1 = Americano
-    std::cout << "Состояние: " << static_cast<int>(machine.getState()) << " (CHECK=3)\n";
+    std::cout << "Состояние: " << static_cast<int>(machine.getState())
+              << " (CHECK=3)\n";
 
     if (machine.check()) {
         std::cout << "Денег достаточно. Начинаем приготовление.\n";
@@ -27,6 +30,8 @@ int main() {
         machine.cancel();
     }
 
-    std::cout << "\nФинальное состояние: " << static_cast<int>(machine.getState()) << " (WAIT=1)\n";
+    std::cout << "\nФинальное состояние: "
+              << static_cast<int>(machine.getState())
+              << " (WAIT=1)\n";
     return 0;
 }

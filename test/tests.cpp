@@ -1,6 +1,7 @@
-// Copyright 2022 GHA Test Team
+]// Copyright 2022 GHA Test Team
 
 #include <gtest/gtest.h>
+#include <string>
 
 #include "Automata.h"
 
@@ -107,12 +108,16 @@ TEST(AutomataTest, GetMenuNotEmpty) {
 
 TEST(AutomataTest, OffClearsCashAndSelection) {
     Automata a;
-    a.on();
-    a.coin(100);
-    a.choice(0);
-    a.off();  // off только из WAIT, но мы в ACCEPT – не должно сработать
-    EXPECT_EQ(a.getState(), STATES::ACCEPT); // не выключился
-    a.cancel(); // вернёмся в WAIT
+    a.on();                     // WAIT
+    a.coin(100);                // ACCEPT
+    a.choice(0);                // CHECK
+    // Из CHECK нельзя выключиться
+    a.off();
+    EXPECT_EQ(a.getState(), STATES::CHECK);
+    // Проверяем, что денег достаточно
+    EXPECT_TRUE(a.check());     // COOK
+    a.cook();
+    a.finish();                 // WAIT
     a.off();
     EXPECT_EQ(a.getState(), STATES::OFF);
 }
