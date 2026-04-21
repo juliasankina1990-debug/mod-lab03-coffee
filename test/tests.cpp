@@ -1,8 +1,6 @@
-]// Copyright 2022 GHA Test Team
-
+// Copyright 2022 GHA Test Team
 #include <gtest/gtest.h>
 #include <string>
-
 #include "Automata.h"
 
 TEST(AutomataTest, InitialStateOff) {
@@ -35,10 +33,8 @@ TEST(AutomataTest, CoinFromAcceptAddsCash) {
     a.on();
     a.coin(50);
     a.coin(30);
-    // остаёмся в ACCEPT
     EXPECT_EQ(a.getState(), STATES::ACCEPT);
-    // проверка, что сумма накопилась (через успешную покупку)
-    a.choice(0);  // Espresso 50 rub
+    a.choice(0);
     EXPECT_TRUE(a.check());
 }
 
@@ -54,7 +50,7 @@ TEST(AutomataTest, ChoiceFromAcceptMovesToCheck) {
     Automata a;
     a.on();
     a.coin(80);
-    a.choice(2);  // Cappuccino 80
+    a.choice(2);
     EXPECT_EQ(a.getState(), STATES::CHECK);
 }
 
@@ -72,7 +68,7 @@ TEST(AutomataTest, CheckWithNotEnoughMoneyStaysInAccept) {
     Automata a;
     a.on();
     a.coin(50);
-    a.choice(3);  // Latte 90
+    a.choice(3);
     bool res = a.check();
     EXPECT_FALSE(res);
     EXPECT_EQ(a.getState(), STATES::ACCEPT);
@@ -80,12 +76,12 @@ TEST(AutomataTest, CheckWithNotEnoughMoneyStaysInAccept) {
 
 TEST(AutomataTest, FullHappyPath) {
     Automata a;
-    a.on();                     // WAIT
-    a.coin(100);                // ACCEPT
-    a.choice(0);                // Espresso 50
-    EXPECT_TRUE(a.check());     // COOK
+    a.on();
+    a.coin(100);
+    a.choice(0);
+    EXPECT_TRUE(a.check());
     a.cook();
-    a.finish();                 // WAIT
+    a.finish();
     EXPECT_EQ(a.getState(), STATES::WAIT);
 }
 
@@ -93,8 +89,8 @@ TEST(AutomataTest, CancelAfterNotEnoughMoney) {
     Automata a;
     a.on();
     a.coin(40);
-    a.choice(1);  // Americano 60
-    a.check();    // не хватает, возврат в ACCEPT
+    a.choice(1);
+    a.check();
     a.cancel();
     EXPECT_EQ(a.getState(), STATES::WAIT);
 }
@@ -108,16 +104,14 @@ TEST(AutomataTest, GetMenuNotEmpty) {
 
 TEST(AutomataTest, OffClearsCashAndSelection) {
     Automata a;
-    a.on();                     // WAIT
-    a.coin(100);                // ACCEPT
-    a.choice(0);                // CHECK
-    // Из CHECK нельзя выключиться
+    a.on();
+    a.coin(100);
+    a.choice(0);
     a.off();
     EXPECT_EQ(a.getState(), STATES::CHECK);
-    // Проверяем, что денег достаточно
-    EXPECT_TRUE(a.check());     // COOK
+    EXPECT_TRUE(a.check());
     a.cook();
-    a.finish();                 // WAIT
+    a.finish();
     a.off();
     EXPECT_EQ(a.getState(), STATES::OFF);
 }
