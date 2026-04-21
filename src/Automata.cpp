@@ -1,24 +1,54 @@
 // Copyright 2022 UNN-IASR
 #include "Automata.h"
+#include <iostream>
+#include <sstream>
 
 Automata::Automata() : cash(0), state(STATES::OFF), selectedDrink(-1) {
-    // инициализация меню (позже заполню)
+    // Инициализация меню и цен
+    menu = {"Espresso", "Americano", "Cappuccino", "Latte"};
+    prices = {50, 60, 80, 90};
 }
 
 void Automata::on() {
-    // stub
+    if (state == STATES::OFF) {
+        state = STATES::WAIT;
+    }
 }
 
 void Automata::off() {
-    // stub
+    if (state == STATES::WAIT) {
+        state = STATES::OFF;
+        cash = 0;
+        selectedDrink = -1;
+    }
 }
 
 void Automata::coin(int money) {
-    // stub
+    if (money <= 0) return;
+    if (state == STATES::WAIT) {
+        cash = money;
+        state = STATES::ACCEPT;
+    } else if (state == STATES::ACCEPT) {
+        cash += money;
+        // остаёмся в ACCEPT
+    }
+}
+
+void Automata::cancel() {
+    if (state == STATES::ACCEPT) {
+        // возврат денег (имитация)
+        cash = 0;
+        state = STATES::WAIT;
+        selectedDrink = -1;
+    }
 }
 
 std::string Automata::getMenu() const {
-    return "";  // stub
+    std::ostringstream oss;
+    for (size_t i = 0; i < menu.size(); ++i) {
+        oss << i+1 << ". " << menu[i] << " - " << prices[i] << " rub\n";
+    }
+    return oss.str();
 }
 
 STATES Automata::getState() const {
@@ -26,21 +56,41 @@ STATES Automata::getState() const {
 }
 
 void Automata::choice(int drinkIndex) {
-    // stub
+    if (state == STATES::ACCEPT && drinkIndex >= 0 && drinkIndex < static_cast<int>(menu.size())) {
+        selectedDrink = drinkIndex;
+        state = STATES::CHECK;
+    }
 }
 
 bool Automata::check() {
-    return false;  // stub
-}
-
-void Automata::cancel() {
-    // stub
+    if (state != STATES::CHECK) return false;
+    if (selectedDrink >= 0 && cash >= prices[selectedDrink]) {
+        state = STATES::COOK;
+        return true;
+    } else {
+        // недостаточно денег – возврат в ACCEPT
+        state = STATES::ACCEPT;
+        return false;
+    }
 }
 
 void Automata::cook() {
-    // stub
+    if (state == STATES::COOK) {
+        // имитация приготовления
+        std::cout << "Приготовление " << menu[selectedDrink] << "...\n";
+    }
 }
 
 void Automata::finish() {
-    // stub
+    if (state == STATES::COOK) {
+        // выдача напитка и сдачи
+        cash -= prices[selectedDrink];
+        std::cout << "Заберите ваш " << menu[selectedDrink] << "!\n";
+        if (cash > 0) {
+            std::cout << "Ваша сдача: " << cash << " rub\n";
+        }
+        cash = 0;
+        selectedDrink = -1;
+        state = STATES::WAIT;
+    }
 }
